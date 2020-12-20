@@ -4,22 +4,22 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AddressBook.Controllers
+namespace AddressBook.API
 {
-    [Route("api/[controller]")]
+    [Route("api/contacts")]
     [ApiController]
     public class ContactController : ControllerBase
     {
-        //private ILoggerManager _logger;
         private IUnitOfWork _unitofwork;
         private IMapper _mapper;
 
-        public ContactController(IUnitOfWork unitOfWork,IMapper mapper)
+        public ContactController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitofwork = unitOfWork;
             _mapper = mapper;
@@ -27,19 +27,27 @@ namespace AddressBook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllContacts()
+        public IActionResult GetAllContacts([FromQuery] ContactQueryParameters contactQueryParameters)
         {
             try
             {
-                var contacts = await _unitofwork.ContactRepository.GetAllContactsAsyc();
-                //_logger.LogInfo($"Returned all contacts from database.");
+                var contacts = _unitofwork.ContactRepository.GetAllContactsAsyc(contactQueryParameters);
+                var metadata = new
+                {
+                    contacts.TotalCount,
+                    contacts.PageSize,
+                    contacts.CurrentPage,
+                    contacts.TotalPages,
+                    contacts.HasNext,
+                    contacts.HasPrevious
+                };
 
-                var contactsResults = _mapper.Map<IEnumerable<ContactDto>>(contacts);
-                return Ok(contactsResults);
+                //var contactsResults = _mapper.Map<IEnumerable<ContactDto>>(contacts);
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok( contacts);
             }
             catch (Exception ex)
             {
-               // _logger.LogError($"Something went wrong inside GetAllContacts action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -52,20 +60,16 @@ namespace AddressBook.Controllers
                 var contact = await _unitofwork.ContactRepository.GetContactByIdAsync(id);
                 if (contact == null)
                 {
-                    //_logger.LogError($"Contact with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
                 else
                 {
-                   // _logger.LogInfo($"Returned Contact with id: {id}");
-
                     var contactResult = _mapper.Map<ContactDto>(contact);
                     return Ok(contactResult);
                 }
             }
             catch (Exception ex)
             {
-               // _logger.LogError($"Something went wrong inside GetContactById action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -78,20 +82,16 @@ namespace AddressBook.Controllers
                 var contactDetailed = await _unitofwork.ContactRepository.GetContactWithDetailsAsync(id);
                 if (contactDetailed == null)
                 {
-                   //_logger.LogError($"Contact with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
                 else
                 {
-                    //_logger.LogInfo($"Returned Contact with details for id: {id}");
-
                     var ownerResult = _mapper.Map<ContactDto>(contactDetailed);
                     return Ok(ownerResult);
                 }
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Something went wrong inside GetContactWithDetails action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -103,13 +103,11 @@ namespace AddressBook.Controllers
             {
                 if (contact == null)
                 {
-                    //_logger.LogError("Contact object sent from client is null.");
                     return BadRequest("Contact object is null");
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    //_logger.LogError("Invalid contact object sent from client.");
                     return BadRequest("Invalid model object");
                 }
 
@@ -124,7 +122,6 @@ namespace AddressBook.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Something went wrong inside CreateContact action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -136,20 +133,17 @@ namespace AddressBook.Controllers
             {
                 if (updateContact == null)
                 {
-                    //_logger.LogError("Contact object sent from client is null.");
                     return BadRequest("Contact object is null");
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    //_logger.LogError("Invalid contact object sent from client.");
                     return BadRequest("Invalid model object");
                 }
 
                 var contactEntity = await _unitofwork.ContactRepository.GetContactByIdAsync(id);
                 if (contactEntity == null)
                 {
-                   // _logger.LogError($"Contact with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
 
@@ -162,7 +156,6 @@ namespace AddressBook.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Something went wrong inside UpdateContact action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -175,15 +168,14 @@ namespace AddressBook.Controllers
                 var contact = await _unitofwork.ContactRepository.GetContactByIdAsync(id);
                 if (contact == null)
                 {
-                    //_logger.LogError($"Contact with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
 
-                if (_unitofwork.TelephoneRepository.ContactTelephoneNumbers(id).Any())
-                {
-                    //_logger.LogError($"Cannot delete contact with id: {id}. It has related telephone numbers. Delete those numbers first");
-                    return BadRequest("Cannot delete contact. It has related telephone number. Delete those numbers first");
-                }
+                //if (_unitofwork.TelephoneRepository.ContactTelephoneNumbers(id).Any())
+                //{
+                //    return BadRequest("Cannot delete contact. It has related telephone number. Delete those numbers first");
+                //}
+
 
                 _unitofwork.ContactRepository.DeleteContact(contact);
                 await _unitofwork.SaveAsync();
@@ -192,10 +184,9 @@ namespace AddressBook.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Something went wrong inside DeleteContact action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
     }
 }
-   
+

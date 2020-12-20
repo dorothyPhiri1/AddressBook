@@ -29,6 +29,7 @@ namespace AddressBook
             services.ConfigurePostgresqlContext(Configuration);
             services.ConfigureUnitOfWork();
             services.AddAutoMapper(typeof(Startup));
+            services.AddMvc();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -49,6 +50,7 @@ namespace AddressBook
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            
 
             app.UseCors("CorsPolicy");
 
