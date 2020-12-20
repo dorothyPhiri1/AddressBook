@@ -1,4 +1,5 @@
 using AddressBook.Extensions;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -27,6 +28,7 @@ namespace AddressBook
             //services.ConfigureLoggerService();
             services.ConfigurePostgresqlContext(Configuration);
             services.ConfigureUnitOfWork();
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressBook", "AddressBook.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "..\DataAccessLayer\DataAccessLayer.csproj", "{9A53283B-0F0A-43F9-9C21-8A50DAEA4023}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayer", "..\BusinessLayer\BusinessLayer.csproj", "{9360D5E9-FDAC-401C-9104-4FF964491C78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9A53283B-0F0A-43F9-9C21-8A50DAEA4023}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A53283B-0F0A-43F9-9C21-8A50DAEA4023}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A53283B-0F0A-43F9-9C21-8A50DAEA4023}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9360D5E9-FDAC-401C-9104-4FF964491C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9360D5E9-FDAC-401C-9104-4FF964491C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9360D5E9-FDAC-401C-9104-4FF964491C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9360D5E9-FDAC-401C-9104-4FF964491C78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
