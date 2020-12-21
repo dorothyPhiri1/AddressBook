@@ -42,9 +42,10 @@ namespace AddressBook.API
                     contacts.HasPrevious
                 };
 
-                //var contactsResults = _mapper.Map<IEnumerable<ContactDto>>(contacts);
+                var contactsResults = _mapper.Map<IEnumerable<ContactDto>>(contacts);
+
                 Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-                return Ok( contacts);
+                return Ok(contactsResults);
             }
             catch (Exception ex)
             {

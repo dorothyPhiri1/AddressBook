@@ -49,6 +49,7 @@ namespace AddressBook
             }
 
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             
 

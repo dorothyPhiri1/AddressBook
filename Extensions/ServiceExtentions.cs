@@ -32,11 +32,6 @@ namespace AddressBook.Extensions
             });
         }
 
-        //public static void ConfigureLoggerService(this IServiceCollection services)
-        //{
-        //    services.AddSingleton<ILoggerManager, LoggerManager>();
-        //}
-
         public static void ConfigurePostgresqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config["postgresqlconnection:connectionString"];

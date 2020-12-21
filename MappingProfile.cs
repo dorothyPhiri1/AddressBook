@@ -12,15 +12,15 @@ namespace AddressBook
     {
         public MappingProfile()
         {
-            CreateMap<Contact, ContactDto>();
+            CreateMap<Contact, ContactDto>().ForMember(des => des.TelephoneNumbersDto, t => t.MapFrom(src => src.TelephoneNumbers));
 
             CreateMap<TelephoneNumber, TelephoneNumberDto>();
+
+            CreateMap<List<TelephoneNumber>, List<TelephoneNumberDto>>();
 
             CreateMap<ContactCreateDto, Contact>();
 
             CreateMap<UpdateContactDto, Contact>();
-
-            //CreateMap<OwnerForUpdateDto, Owner>();
         }
            
     }
